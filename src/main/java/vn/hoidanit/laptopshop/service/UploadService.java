@@ -19,6 +19,23 @@ public class UploadService {
 
     }
 
+    public void handleDeleteAvatar(String targetFolder, String dirAvatar) {
+        String rootPath = this.servletContext.getRealPath("/resources/images");
+        try {
+            File dir = new File(rootPath + File.separator + targetFolder);
+
+            File severFile = new File(dir.getAbsolutePath() + File.separator + dirAvatar);
+
+            if (severFile.delete()) {
+                System.out.println("xóa rồi");
+            }
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+    }
+
     public String handleSaveUploadFile(MultipartFile file, String targetFolder) {
         String rootPath = this.servletContext.getRealPath("/resources/images");
         String finalName = "";
