@@ -3,7 +3,11 @@ package vn.hoidanit.laptopshop.controller.admin;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
+import vn.hoidanit.laptopshop.domain.Product;
 import vn.hoidanit.laptopshop.domain.User;
 import vn.hoidanit.laptopshop.service.UploadService;
 import vn.hoidanit.laptopshop.service.UserService;
@@ -48,9 +53,21 @@ public class UserController {
     }
 
     @RequestMapping("/admin/user") // default la method get
-    public String getUserPage(Model model) {
-        List<User> users = this.userService.getAllUsers();
+    public String getUserPage(Model model, @RequestParam("page") Optional<String> pageOptional) {
+        int page = 1;
+        try {
+            if (pageOptional.isPresent()) {
+                page = Integer.parseInt(pageOptional.get());
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        Pageable pageable = PageRequest.of(page - 1, 1);
+        Page<User> prs = this.userService.fetchAllUser(pageable);
+        List<User> users = prs.getContent();
         model.addAttribute("users", users);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", prs.getTotalPages());
         System.out.println(">>> check users" + users);
         return "admin/user/show";
     }

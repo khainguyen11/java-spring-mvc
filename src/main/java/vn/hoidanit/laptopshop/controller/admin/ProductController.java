@@ -1,7 +1,9 @@
 package vn.hoidanit.laptopshop.controller.admin;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -33,6 +35,7 @@ public class ProductController {
     }
 
     // uplate product
+
     @GetMapping("/admin/product/update/{id}")
     public String getUpdatePage(Model model, @PathVariable long id) {
         model.addAttribute("id", id);
@@ -90,11 +93,23 @@ public class ProductController {
 
     @GetMapping("/admin/product")
     public String getProduct(Model model,
-            @RequestParam("page") int page) {
+            @RequestParam("page") Optional<String> pageOptional) {
+
+        int page = 1;
+        try {
+            if (pageOptional.isPresent()) {
+                page = Integer.parseInt(pageOptional.get());
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
         // database: offset + limit
-        Pageable pageable = PageRequest.of(page, 2);
-        List<Product> products = this.productService.getAllProducts();
+        Pageable pageable = PageRequest.of(page - 1, 5);
+        Page<Product> prs = this.productService.fetchProducts(pageable);
+        List<Product> products = prs.getContent();
         model.addAttribute("products", products);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", prs.getTotalPages());
         return "admin/product/show";
     }
 

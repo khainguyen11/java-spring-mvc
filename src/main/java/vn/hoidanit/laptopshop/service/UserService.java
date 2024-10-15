@@ -2,6 +2,8 @@ package vn.hoidanit.laptopshop.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.laptopshop.domain.Role;
@@ -18,6 +20,10 @@ public class UserService {
     public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+    }
+
+    public Page<User> fetchAllUser(Pageable pageable) {
+        return this.userRepository.findAll(pageable);
     }
 
     public int handleCountUser() {

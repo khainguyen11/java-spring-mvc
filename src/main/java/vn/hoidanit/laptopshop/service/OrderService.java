@@ -1,5 +1,7 @@
 package vn.hoidanit.laptopshop.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.laptopshop.domain.Order;
@@ -27,6 +29,10 @@ public class OrderService {
             countOrder++;
         }
         return countOrder;
+    }
+
+    public Page<Order> fetchAllOrder(Pageable pageable) {
+        return this.orderRepository.findAll(pageable);
     }
 
     public List<Order> getAllOrder() {
