@@ -20,6 +20,20 @@ public class UserService {
         this.roleRepository = roleRepository;
     }
 
+    public int handleCountUser() {
+        int countUser = 0;
+        List<User> users = this.userRepository.findAll();
+
+        for (User user : users) {
+
+            String t = user.getRole().getName();
+            if (!t.equals("ADMIN")) {
+                countUser++;
+            }
+        }
+        return countUser;
+    }
+
     public List<User> getAllUsers() {
         return this.userRepository.findAll();
     }

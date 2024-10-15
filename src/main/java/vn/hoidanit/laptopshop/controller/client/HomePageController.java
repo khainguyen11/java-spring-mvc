@@ -16,10 +16,8 @@ import vn.hoidanit.laptopshop.domain.User;
 import vn.hoidanit.laptopshop.domain.dto.RegisterDto;
 import vn.hoidanit.laptopshop.service.ProductService;
 import vn.hoidanit.laptopshop.service.UserService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
@@ -45,7 +43,7 @@ public class HomePageController {
     @GetMapping("/register")
     public String getRegisterPage(Model model, HttpServletRequest request) {
         model.addAttribute("registerUser", new RegisterDto());
-        return "/client/auth/register";
+        return "client/auth/register";
     }
 
     @PostMapping("/register")
@@ -59,7 +57,7 @@ public class HomePageController {
         }
         User user = this.userService.registerDTOtoUser(inforRegister);
         if (bindingResult.hasErrors() || user.getFullName() == null) {
-            return "/client/auth/register";
+            return "client/auth/register";
         }
         String hashPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
